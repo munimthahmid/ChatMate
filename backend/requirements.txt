@@ -1,0 +1,12 @@
+fastapi[standard]
+uvicorn
+sqlalchemy
+aiosqlite
+databases
+passlib[bcrypt]
+pyjwt
+python-multipart
+pytest
+alembic
+pydantic-settings
+psycopg2-binary
