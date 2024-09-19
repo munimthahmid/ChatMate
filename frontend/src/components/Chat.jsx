@@ -1,112 +1,35 @@
 // src/components/Chat.jsx
-import React, { useState, useEffect, useRef } from "react";
-import { AuthContext, useAuth } from "../context/AuthContext";
+import { useState, useEffect } from "react";
 import { PhoneIcon } from "@heroicons/react/outline"; // Using Heroicons for the call button icon
 import VoiceChat from "./VoiceChat";
-const BASE_URL = "http://localhost:8000";
+import { useChatbot } from "../context/ChatbotContext";
 
 const Chat = () => {
-  const { auth } = useAuth();
-  const [messages, setMessages] = useState([
-    { sender: "bot", text: "Hello! How can I assist you today?" },
-  ]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef(null);
-  const [isTyping, setIsTyping] = useState(false);
-  const [typingBotMessage, setTypingBotMessage] = useState(""); // For typewriter effect
   const [isVoiceChatOpen, setIsVoiceChatOpen] = useState(false); // State to manage VoiceChat modal
 
-  // Scroll to the latest message
-  const scrollToBottom = (smooth = false) => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({
-        behavior: smooth ? "smooth" : "auto",
-      });
-    }
-  };
+  const {
+    typingBotMessage,
+    scrollToBottom,
+    messages,
+    messagesEndRef,
+    setInput,
+    input,
+    handleKeyPress,
+    handleSend,
+    isTyping,
+    loading,
+  } = useChatbot();
 
-  const typeMessage = (messageText) => {
-    setIsTyping(true);
-    let currentIndex = 0;
-    setTypingBotMessage(messageText[currentIndex]);
-    // Clear previous typing message
-    const interval = setInterval(() => {
-      console.log(messageText[currentIndex]);
-
-      setTypingBotMessage((prev) => prev + messageText[currentIndex]);
-      scrollToBottom();
-      currentIndex++;
-      if (currentIndex === messageText.length) {
-        clearInterval(interval);
-        // Once typing is done, add the complete message to the messages state
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { sender: "bot", text: messageText },
-        ]);
-        setTypingBotMessage(""); // Clear the typing message after completion
-        setIsTyping(false);
-      }
-    }, 5); // Adjust the speed of typing here
-  };
-
-  const handleSend = async () => {
-    if (input.trim() === "") return;
-
-    const userMessage = { sender: "user", text: input };
-    setMessages([...messages, userMessage]);
-    setInput("");
-    setLoading(true);
-
-    try {
-      const response = await fetch(`${BASE_URL}/chat/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth.token}`,
-        },
-        body: JSON.stringify({ message: input }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const botMessage = { sender: "bot", text: data.reply };
-        typeMessage(botMessage.text); // Call the typewriter effect here
-      } else {
-        const errorData = await response.json();
-        const errorMsg =
-          errorData.detail || "Failed to get response from chatbot.";
-        const botMessage = { sender: "bot", text: errorMsg };
-        setMessages((prevMessages) => [...prevMessages, botMessage]);
-      }
-    } catch (err) {
-      console.error("Chat error:", err);
-      const botMessage = {
-        sender: "bot",
-        text: "An error occurred while processing your request.",
-      };
-      setMessages((prevMessages) => [...prevMessages, botMessage]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
   useEffect(() => {
     if (typingBotMessage) {
       scrollToBottom();
     }
-  }, [typingBotMessage]);
+  }, [typingBotMessage, scrollToBottom]);
 
   // Ensure scrolling after the full message is added
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, scrollToBottom]);
 
   return (
     <div className="flex flex-col h-full">
@@ -178,6 +101,7 @@ const Chat = () => {
         <VoiceChat
           isOpen={isVoiceChatOpen}
           onRequestClose={() => setIsVoiceChatOpen(false)}
+          setInput={setInput}
         />
       )}
     </div>

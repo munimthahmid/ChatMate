@@ -3,6 +3,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+  const BASE_URL = "http://localhost:8000";
+
   const [auth, setAuth] = useState({
     token: null,
     user: null,
@@ -28,7 +30,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ login, logout, auth }}>
+    <AuthContext.Provider value={{ login, logout, auth, BASE_URL }}>
       {children}
     </AuthContext.Provider>
   );

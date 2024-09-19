@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useChatbot } from "../context/ChatbotContext";
 
 let recognition = null;
 if ("webkitSpeechRecognition" in window) {
@@ -18,10 +19,12 @@ const useSpeechRecognition = () => {
   const [botResponse, setBotResponse] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const synthRef = useRef(window.speechSynthesis);
+  const { typeMessage, handleSetUserMessage } = useChatbot();
   const sendVoiceMessage = useCallback(
     async (messageText) => {
       setIsProcessing(true);
       try {
+        handleSetUserMessage(messageText);
         const response = await fetch(`${BASE_URL}/chat/`, {
           method: "POST",
           headers: {
@@ -35,6 +38,9 @@ const useSpeechRecognition = () => {
           const data = await response.json();
           const botReply = data.reply;
           setBotResponse(botReply);
+          console.log("Bot Reply:", botReply);
+          console.log("Bot text in useSpeech Hook", botReply);
+          typeMessage(botReply);
           speak(botReply);
         } else {
           const errorData = await response.json();
