@@ -1,30 +1,26 @@
-import React, { useContext } from "react";
-import { AuthContext } from "../context/AuthContext"; // Context to manage auth state
-import { useNavigate } from "react-router-dom"; // For navigation
+// src/pages/Dashboard.jsx
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import DashboardHome from "../components/DashboardHome";
+import Chat from "../components/Chat";
+import TrainChatbot from "../components/TrainChatbot";
 
 const Dashboard = () => {
-  const { auth, logout } = useContext(AuthContext); // Access auth state and logout function
-  const navigate = useNavigate(); // Hook for navigation
-
-  // Handle logout
-  const handleLogout = () => {
-    logout(); // Clear auth state
-    navigate("/login"); // Redirect to login page
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-lg p-8 space-y-4 bg-white rounded shadow">
-        <h1 className="text-3xl font-bold text-center">
-          Welcome, {auth.user.username}!
-        </h1>
-        <p className="text-center">This is your dashboard.</p>
-        <button
-          onClick={handleLogout}
-          className="w-full px-4 py-2 font-semibold text-white bg-red-500 rounded hover:bg-red-600 transition duration-200"
-        >
-          Log Out
-        </button>
+    <div className="flex md:flex-row min-h-screen page-container">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content Area */}
+      <div className="flex-1 p-6 overflow-auto bg-gradient-to-b from-teal-200 to-white">
+        <Routes>
+          <Route path="/" element={<DashboardHome />} />
+          <Route path="chat" element={<Chat />} />
+          <Route path="train-chatbot" element={<TrainChatbot />} />
+          {/* Redirect any unknown nested routes to the dashboard home */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
       </div>
     </div>
   );

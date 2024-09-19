@@ -1,2 +1,7 @@
 npm i framer-motion
 npm i -D daisyui@latest
+npm install react-icons
+npm install react-modal
+npm install @heroicons/react
+npm install --save react-speech-recognition
+npm install @speechly/speech-recognition-polyfill

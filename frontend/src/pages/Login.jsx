@@ -130,7 +130,7 @@ const Login = () => {
               placeholder="Enter your password"
               id="password"
               name="password"
-              onChange={(e) => handleChange(e.target.value)}
+              onChange={handleChange}
               value={password}
               variants={itemVariants}
             />
