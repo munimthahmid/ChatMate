@@ -52,7 +52,6 @@ const ChatbotProvider = ({ children }) => {
     const userMessage = { sender: "user", text: input };
     setMessages([...messages, userMessage]);
     setInput("");
-    setLoading(true);
   };
   const handleSend = async () => {
     if (input.trim() === "") return;

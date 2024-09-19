@@ -21,9 +21,9 @@ const useSpeechRecognition = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [botResponse, setBotResponse] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isBotSpeaking, setIsBotSpeaking] = useState(false); // New state
   const synthRef = useRef(window.speechSynthesis);
   const { typeMessage, handleSetUserMessage } = useChatbot();
-  const [isBotSpeaking, setIsBotSpeaking] = useState(false); // New state
 
   const sendVoiceMessage = useCallback(
     async (messageText) => {
@@ -138,10 +138,10 @@ const useSpeechRecognition = () => {
   const speak = (text) => {
     if ("speechSynthesis" in window) {
       const utterThis = new SpeechSynthesisUtterance(text);
-      setIsBotSpeaking(true);
+      setIsBotSpeaking(true); // Set bot speaking to true
       utterThis.onend = () => {
+        setIsBotSpeaking(false); // Set bot speaking to false when done
         // Optionally restart recognition after speaking
-        setIsBotSpeaking(false);
         if (isRecording && !recognition.continuous) {
           recognition.start();
         }
@@ -163,7 +163,7 @@ const useSpeechRecognition = () => {
     hasRecognitionSupport: !!recognition,
     isProcessing,
     botResponse,
-    isBotSpeaking,
+    isBotSpeaking, // Expose the new state
   };
 };
 
