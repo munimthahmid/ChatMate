@@ -6,27 +6,27 @@ from app.crud.user import authenticate_user
 from app.dependencies import get_db
 from app.schemas.user import Token
 from fastapi.security import OAuth2PasswordRequestForm
+from .. import models
+from ..core.security import verify_password
+from typing import Annotated
 
 router = APIRouter(
-    prefix="/auth",
-    tags=["auth"],
+    tags=["Authentication"],
 )
 
-@router.post("/token", response_model=Token)
-def login_for_access_token(
-    db: Session = Depends(get_db),
-    form_data: OAuth2PasswordRequestForm = Depends()
-):
-    user = authenticate_user(db, form_data.username, form_data.password)
+
+
+@router.post("/login")
+def login(request:Annotated[OAuth2PasswordRequestForm, Depends()],db:Session=Depends(get_db)):
+    user=db.query(models.user.User).filter(models.user.User.username==request.username).first()
+    print(user)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Invalid Credentials")
+    if not verify_password(request.password, user.hashed_password):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Incorrect Password")
+    
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username},
-        expires_delta=access_token_expires
+        data={"sub": user.username}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return Token(access_token=access_token, token_type="bearer")

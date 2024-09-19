@@ -1,0 +1,2 @@
+npm i framer-motion
+npm i -D daisyui@latest

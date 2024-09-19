@@ -5,8 +5,9 @@ from app.core.security import SECRET_KEY, ALGORITHM
 from app.models.user import User
 from fastapi.security import OAuth2PasswordBearer
 import jwt
+from app.crud.user import get_user_by_username
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 # Dependency to get DB session
 def get_db():
@@ -18,7 +19,6 @@ def get_db():
 
 # Dependency to get current user
 def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    from app.crud.user import get_user_by_username
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

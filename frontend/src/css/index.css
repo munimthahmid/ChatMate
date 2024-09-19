@@ -1,3 +1,44 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer base {
+  .page-container {
+    @apply min-h-screen bg-gradient-to-b from-teal-200 to-white m-0 p-0;
+  }
+
+  /* bg-cover bg-center bg-[#edf9fe] p-10 pt-2 min-h-screen; */
+
+  .careercompass-bg {
+    @apply bg-teal-500;
+  }
+  .careercompass-border {
+    @apply border-teal-500;
+  }
+  .careercompass-text {
+    @apply text-teal-500;
+  }
+}
+
+@layer components {
+  .careercompass-bg {
+    @apply bg-teal-500;
+  }
+  .careercompass-border {
+    @apply border-teal-500;
+  }
+  .careercompass-text {
+    @apply text-teal-500;
+  }
+}
+
+@layer utilities {
+  .careercompass-bg {
+    @apply bg-teal-500;
+  }
+  .careercompass-border {
+    @apply border-teal-500;
+  }
+  .careercompass-text {
+    @apply text-teal-500;
+  }
+}
