@@ -56,7 +56,7 @@ const Chat = () => {
               <ChatIcon className="w-8 h-8 text-gray-400 mr-2" />
             )}
             <div
-              className={`px-4 py-2 rounded-full max-w-2xl break-words ${
+              className={`px-4 py-2 rounded-full max-w-7xl break-words ${
                 msg.sender === "user"
                   ? "bg-gradient-to-r from-blue-400 to-blue-500 text-white"
                   : "bg-gray-200 text-gray-800"
@@ -71,7 +71,7 @@ const Chat = () => {
         {typingBotMessage && (
           <div className="flex mb-2 justify-start">
             <ChatIcon className="w-8 h-8 text-gray-400 mr-2" />
-            <div className="px-4 py-2 rounded-full max-w-2xl break-words bg-gray-200 text-gray-800">
+            <div className="px-4 py-2 rounded-full max-w-7xl break-words bg-gray-200 text-gray-800">
               {typingBotMessage}
             </div>
           </div>
@@ -84,9 +84,7 @@ const Chat = () => {
         <button className="p-2 hover:bg-gray-200 rounded-full">
           <PaperClipIcon className="w-6 h-6 text-gray-600" />
         </button>
-        <button className="p-2 hover:bg-gray-200 rounded-full">
-          <PhotographIcon className="w-6 h-6 text-gray-600" />
-        </button>
+
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}

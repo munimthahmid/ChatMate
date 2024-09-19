@@ -11,3 +11,9 @@ alembic
 pydantic-settings
 psycopg2-binary
 fastapi[all]
+transformers
+sentence-transformers
+faiss-cpu
+langchain
+pdfminer.six
+accelerate
