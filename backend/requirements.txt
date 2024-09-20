@@ -17,3 +17,4 @@ faiss-cpu
 langchain
 pdfminer.six
 accelerate
+PyPDF2

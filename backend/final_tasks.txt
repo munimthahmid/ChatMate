@@ -1,0 +1,4 @@
+1. each user will have a team, and team id
+2. each pdf that is being uploaded for training will also be stored under the team id(that we will get from user details) and will store them in backend.
+3. in frontned there will be another page that is resource page, where we will display all the pdfs(somehow) under the team name. 
+whoo! that's a wrap
