@@ -14,7 +14,8 @@ def create_user(db: Session, user: UserCreate):
     db_user = UserModel(
         username=user.username,
         email=user.email,
-        hashed_password=hashed_password
+        hashed_password=hashed_password,
+        team_id=user.team_id
     )
     db.add(db_user)
     db.commit()

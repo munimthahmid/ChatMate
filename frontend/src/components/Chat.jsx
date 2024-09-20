@@ -141,7 +141,7 @@ const Chat = () => {
 
             {msg.type === "file" && (
               <div
-                className={`px-4 py-2 rounded-full max-w-7xl break-words ${
+                className={`px-4 py-2 rounded-lg max-w-7xl break-words ${
                   msg.sender === "user"
                     ? "bg-gradient-to-r from-blue-400 to-blue-500 text-white"
                     : "bg-gray-200 text-gray-800"

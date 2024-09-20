@@ -15,11 +15,8 @@ import pickle
 import torch
 
 import PyPDF2
-import tempfile
-
 import nltk
-nltk.download('punkt')
-from nltk.tokenize import sent_tokenize
+
 
 router = APIRouter(
     prefix="/chat",
@@ -141,7 +138,7 @@ def load_global_chunks():
 # Initialize the LLM with GPT-2 Medium
 LLM_MODEL_NAME = "distilgpt2"
 
-tokenizer = AutoTokenizer.from_pretrained(LLM_MODEL_NAME)
+tokenizer = AutoTokenizer.from_pretrained(LLM_MODEL_NAME,clean_up_tokenization_spaces=True)
 model = AutoModelForCausalLM.from_pretrained(LLM_MODEL_NAME)
 
 # Ensure the pad_token is set
@@ -214,21 +211,6 @@ def generate_answer(question, context):
         raise e
 
 
-def split_text_into_chunks(text, max_length=500):
-    # Simple splitting by sentences
-    sentences = sent_tokenize(text)
-    chunks = []
-    current_chunk = ""
-
-    for sentence in sentences:
-        if len(current_chunk) + len(sentence) <= max_length:
-            current_chunk += " " + sentence
-        else:
-            chunks.append(current_chunk.strip())
-            current_chunk = sentence
-    if current_chunk:
-        chunks.append(current_chunk.strip())
-    return chunks
 
 @router.post("/upload", response_model=ChatResponse)
 def upload_file(
@@ -264,26 +246,6 @@ def upload_file(
         summary = summarize_text(extracted_text)
         print("Printing Summary")
         print(summary)
-
-        # Split text into chunks
-        text_chunks = split_text_into_chunks(extracted_text)
-        print(f"Number of chunks created: {len(text_chunks)}")
-
-        # Load existing vector store and chunks
-        index = load_global_vector_store()
-        existing_chunks = load_global_chunks()
-
-        # Compute embeddings and update index and chunks
-        for idx, chunk in enumerate(text_chunks):
-            embedding = embedding_model.encode([chunk])
-            index.add(embedding)
-            existing_chunks.append({'text': chunk})
-
-        # Save the updated index and chunks
-        faiss.write_index(index, GLOBAL_VECTOR_STORE_PATH)
-        with open(GLOBAL_CHUNKS_PATH, 'wb') as f:
-            pickle.dump(existing_chunks, f)
-
         return ChatResponse(
             reply=f"Summary: {summary}",
         )

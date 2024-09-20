@@ -25,7 +25,8 @@ embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 # Define the directory to store vector stores and chunks
 VECTOR_STORE_DIR = "vector_stores"
 os.makedirs(VECTOR_STORE_DIR, exist_ok=True)
-
+TEAM_PDFS_DIR = "team_pdfs"
+os.makedirs(TEAM_PDFS_DIR, exist_ok=True)
 # Define global vector store paths
 GLOBAL_VECTOR_STORE_PATH = os.path.join(VECTOR_STORE_DIR, "global_faiss.index")
 GLOBAL_CHUNKS_PATH = os.path.join(VECTOR_STORE_DIR, "global_chunks.pkl")
@@ -59,12 +60,32 @@ async def train_chatbot(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+
+
+    # print("here!")
+    
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
 
+
+    team_id = current_user.team_id  # Assuming 'team_id' is available in 'current_user'
+    team_dir = os.path.join(TEAM_PDFS_DIR, f"team_{team_id}")
+    os.makedirs(team_dir, exist_ok=True)
+
+    # # Save the uploaded PDF under the team's directory
+    pdf_filename = f"{uuid.uuid4()}_{file.filename}"
+    pdf_path = os.path.join(team_dir, pdf_filename)
+
+    try:
+        with open(pdf_path, 'wb') as pdf_file:
+            pdf_bytes = await file.read()
+            pdf_file.write(pdf_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save PDF: {str(e)}")
+
+
     # Read PDF content
     try:
-        pdf_bytes = await file.read()
         # Save the uploaded PDF temporarily
         temp_pdf_path = f"temp_{uuid.uuid4()}.pdf"
         with open(temp_pdf_path, 'wb') as temp_pdf:

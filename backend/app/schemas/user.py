@@ -1,8 +1,11 @@
 from pydantic import BaseModel, EmailStr
-
+from typing import Optional
 class UserBase(BaseModel):
     username: str
     email: EmailStr
+    team_id:int
+    team_name: Optional[str]  # Add this field
+
     class Config:
         from_attributes = True
 

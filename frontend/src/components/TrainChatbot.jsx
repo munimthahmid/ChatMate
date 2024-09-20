@@ -25,13 +25,13 @@ const TrainChatbot = () => {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("team_id", auth.user.teamId);
 
     try {
       const response = await fetch(`${BASE_URL}/train-chatbot/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${auth.token}`,
-          // 'Content-Type': 'multipart/form-data', // Do not set Content-Type when using FormData
         },
         body: formData,
       });

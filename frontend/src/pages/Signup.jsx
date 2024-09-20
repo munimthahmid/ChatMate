@@ -12,6 +12,7 @@ const Signup = () => {
     username: "",
     email: "",
     password: "",
+    team_id: null,
   });
   function handleCrossClick(e) {
     e.preventDefault();
@@ -20,7 +21,7 @@ const Signup = () => {
   const [error, setError] = useState(""); // To handle and display errors
   const [loading, setLoading] = useState(false); // To handle loading state
 
-  const { username, email, password } = formData;
+  const { username, email, password, team_id } = formData;
 
   // Handle input changes
   const handleChange = (e) => {
@@ -38,6 +39,7 @@ const Signup = () => {
     setLoading(true);
 
     try {
+      console.log("here");
       // Send POST request to FastAPI /users/ endpoint for signup
       const response = await fetch(`${BASE_URL}/users/`, {
         method: "POST",
@@ -49,6 +51,7 @@ const Signup = () => {
 
       if (response.ok || response.status === 201) {
         const data = await response.json();
+        console.log(data);
 
         // Automatically log in the user after signup
         const loginResponse = await fetch(`${BASE_URL}/login`, {
@@ -59,6 +62,7 @@ const Signup = () => {
           body: new URLSearchParams({
             username: data.username,
             password: formData.password,
+            team_id: formData.team_id,
           }).toString(), // Send login data as URL-encoded
         });
 
@@ -141,6 +145,16 @@ const Signup = () => {
               name="email"
               onChange={handleChange}
               value={email}
+              variants={itemVariants}
+            />
+            <motion.input
+              type="number"
+              className="w-full p-3 rounded-md placeholder:font-serif placeholder:font-light placeholder:text-sm text-sm mb-4 bg-white border-gray-300 border"
+              placeholder="Enter your team id"
+              id="id"
+              name="team_id"
+              onChange={handleChange}
+              value={team_id}
               variants={itemVariants}
             />
             <motion.input

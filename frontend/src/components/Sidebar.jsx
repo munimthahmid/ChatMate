@@ -6,6 +6,7 @@ import {
   FaComments,
   FaCogs,
   FaSignOutAlt,
+  FaBook,
 } from "react-icons/fa";
 import { useState } from "react";
 
@@ -28,6 +29,11 @@ const Sidebar = () => {
       name: "Train Chatbot",
       path: "/dashboard/train-chatbot",
       icon: <FaCogs />,
+    },
+    {
+      name: "Resources",
+      path: "/dashboard/resources",
+      icon: <FaBook />,
     },
   ];
   const handleClick = (value) => {

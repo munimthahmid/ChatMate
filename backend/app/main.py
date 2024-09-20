@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.database import engine, Base
-from app.routers import users, auth,chat,train_chatbot
+from app.routers import users, auth,chat,train_chatbot,teams,team_pdfs
 from fastapi.middleware.cors import CORSMiddleware
 
 # Create all tables
@@ -28,3 +28,5 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(chat.router)
 app.include_router(train_chatbot.router)
+app.include_router(teams.router)
+app.include_router(team_pdfs.router)
