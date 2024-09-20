@@ -6,7 +6,7 @@ export const ChatbotContext = createContext();
 const ChatbotProvider = ({ children }) => {
   const { auth, BASE_URL } = useAuth();
   const [messages, setMessages] = useState([
-    { sender: "bot", text: "Hello! How can I assist you today?" },
+    { sender: "bot", text: "Hello! How can I assist you today?", type: "text" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,7 +40,7 @@ const ChatbotProvider = ({ children }) => {
         // Once typing is done, add the complete message to the messages state
         setMessages((prevMessages) => [
           ...prevMessages,
-          { sender: "bot", text: messageText },
+          { sender: "bot", text: messageText, type: "text" },
         ]);
         setTypingBotMessage(""); // Clear the typing message after completion
         setIsTyping(false);
@@ -49,7 +49,7 @@ const ChatbotProvider = ({ children }) => {
   };
 
   const handleSetUserMessage = (input) => {
-    const userMessage = { sender: "user", text: input };
+    const userMessage = { sender: "user", text: input, type: "text" };
     setMessages([...messages, userMessage]);
     setInput("");
   };
@@ -70,13 +70,13 @@ const ChatbotProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        const botMessage = { sender: "bot", text: data.reply };
+        const botMessage = { sender: "bot", text: data.reply, type: "text" };
         typeMessage(botMessage.text); // Call the typewriter effect here
       } else {
         const errorData = await response.json();
         const errorMsg =
           errorData.detail || "Failed to get response from chatbot.";
-        const botMessage = { sender: "bot", text: errorMsg };
+        const botMessage = { sender: "bot", text: errorMsg, type: "text" };
         setMessages((prevMessages) => [...prevMessages, botMessage]);
       }
     } catch (err) {
@@ -84,6 +84,7 @@ const ChatbotProvider = ({ children }) => {
       const botMessage = {
         sender: "bot",
         text: "An error occurred while processing your request.",
+        type: "text",
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
     } finally {
@@ -112,6 +113,7 @@ const ChatbotProvider = ({ children }) => {
         loading,
         typeMessage,
         handleSetUserMessage,
+        setMessages,
       }}
     >
       {children}

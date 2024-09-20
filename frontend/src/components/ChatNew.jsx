@@ -1,19 +1,18 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
-import { AuthContext, useAuth } from "../context/AuthContext";
+import React, { useState, useEffect, useRef } from "react";
 import {
   PaperClipIcon,
   PhotographIcon,
   MicrophoneIcon,
 } from "@heroicons/react/outline"; // For the icons in input
-import { ChatIcon } from "@heroicons/react/solid"; // For the chatbot icon in messages
+import { ChatIcon, DocumentIcon } from "@heroicons/react/solid"; // Added DocumentIcon for file messages
 import VoiceChat from "./VoiceChat"; // Import the VoiceChat component
 import { useChatbot } from "../context/ChatbotContext";
-import { DocumentIcon } from "@heroicons/react/solid"; // Added DocumentIcon for file messages
 
 const BASE_URL = "http://localhost:8000";
 
 const Chat = () => {
   const [isVoiceChatOpen, setIsVoiceChatOpen] = useState(false); // State to manage VoiceChat modal
+  const [selectedFile, setSelectedFile] = useState(null); // State to manage selected file
 
   const {
     typingBotMessage,
@@ -28,9 +27,19 @@ const Chat = () => {
     loading,
     setMessages, // Assuming you have a setMessages function
   } = useChatbot();
+
   const fileInputRef = useRef(null); // Ref for hidden file input
-  const { auth } = useAuth();
-  const [isUploading, setIsUploading] = useState(false); // State to manage uploading/loading status
+
+  useEffect(() => {
+    if (typingBotMessage) {
+      scrollToBottom();
+    }
+  }, [typingBotMessage]);
+
+  // Ensure scrolling after the full message is added
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -41,7 +50,6 @@ const Chat = () => {
 
       try {
         // Display the file in the chat as a user message
-        setIsUploading(true);
         const fileMessage = {
           sender: "user",
           type: "file",
@@ -51,21 +59,15 @@ const Chat = () => {
           },
         };
         setMessages([...messages, fileMessage]);
-        const processingMessage = {
-          sender: "bot",
-          type: "text",
-          text: "Processing your file...",
-        };
-        setMessages((prevMessages) => [...prevMessages, processingMessage]);
 
         // Upload the file to the backend
         const response = await fetch(`${BASE_URL}/chat/upload`, {
           method: "POST",
           body: formData,
           // Include authentication headers if required
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         });
 
         if (!response.ok) {
@@ -73,14 +75,11 @@ const Chat = () => {
         }
 
         const data = await response.json();
-        setMessages((prevMessages) =>
-          prevMessages.filter((msg) => msg.text !== "Processing your file...")
-        );
         // Display the bot's confirmation message
         const botMessage = {
           sender: "bot",
           type: "text",
-          text: data.reply,
+          text: "File received and processed successfully.",
         };
         setMessages((prevMessages) => [...prevMessages, botMessage]);
       } catch (error) {
@@ -98,16 +97,6 @@ const Chat = () => {
   const handlePaperClipClick = () => {
     fileInputRef.current.click(); // Trigger the hidden file input
   };
-  useEffect(() => {
-    if (typingBotMessage) {
-      scrollToBottom();
-    }
-  }, [typingBotMessage]);
-
-  // Ensure scrolling after the full message is added
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   return (
     <div className="flex flex-col h-full">
@@ -128,17 +117,15 @@ const Chat = () => {
             )}
             {msg.type === "text" && (
               <div
-                className={`px-4 py-2 rounded-lg max-w-7xl break-words overflow-hidden ${
+                className={`px-4 py-2 rounded-full max-w-7xl break-words ${
                   msg.sender === "user"
                     ? "bg-gradient-to-r from-blue-400 to-blue-500 text-white"
                     : "bg-gray-200 text-gray-800"
                 }`}
-                style={{ wordBreak: "break-word" }} // This ensures long words break into new lines
               >
                 {msg.text}
               </div>
             )}
-
             {msg.type === "file" && (
               <div
                 className={`px-4 py-2 rounded-full max-w-7xl break-words ${
@@ -166,7 +153,7 @@ const Chat = () => {
         {typingBotMessage && (
           <div className="flex mb-2 justify-start">
             <ChatIcon className="w-8 h-8 text-gray-400 mr-2" />
-            <div className="px-4 py-2 rounded-lg max-w-7xl break-words bg-gray-200 text-gray-800">
+            <div className="px-4 py-2 rounded-full max-w-7xl break-words bg-gray-200 text-gray-800">
               {typingBotMessage}
             </div>
           </div>
