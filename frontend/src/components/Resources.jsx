@@ -5,12 +5,13 @@ import { AuthContext } from "../context/AuthContext";
 const Resources = () => {
   const { auth } = useContext(AuthContext);
   const [teamNames, setTeamNames] = useState([]);
-  const [selectedTeam, setSelectedTeam] = useState("");
+  const [selectedTeam, setSelectedTeam] = useState(auth.user.team_name);
   const [pdfs, setPdfs] = useState([]);
   const [status, setStatus] = useState("");
   const BASE_URL = "http://localhost:8000";
 
   // Fetch team names on component mount
+
   useEffect(() => {
     const fetchTeamNames = async () => {
       try {
@@ -25,7 +26,8 @@ const Resources = () => {
           setTeamNames(data);
 
           // Set default selected team to user's own team
-          const userTeamName = auth.user.teamName; // Ensure 'teamName' is available in 'auth.user'
+          const userTeamName = auth.user.team_name; // Ensure 'teamName' is available in 'auth.user'
+
           setSelectedTeam(userTeamName);
         } else {
           const errorData = await response.json();
@@ -38,7 +40,7 @@ const Resources = () => {
     };
 
     fetchTeamNames();
-  }, [auth.token, auth.user.teamName]);
+  }, [auth.token, auth.user.team_name]);
 
   // Fetch PDFs when selected team changes
   const fetchPdfs = useCallback(
@@ -132,7 +134,9 @@ const Resources = () => {
 
       {/* PDFs List */}
       <div>
-        <h2 className="text-2xl font-semibold mb-4">PDFs for {selectedTeam}</h2>
+        <h2 className="text-2xl font-semibold mb-4">
+          PDFs for Team {selectedTeam}
+        </h2>
         {status && <div className="text-red-500 mb-2">{status}</div>}
         <ul className="list-disc pl-5">
           {pdfs.map((pdf, index) => (

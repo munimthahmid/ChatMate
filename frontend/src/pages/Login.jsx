@@ -167,7 +167,7 @@ const Login = () => {
             >
               <button className="flex items-center justify-center py-2 space-x-3 border rounded shadow-sm hover:bg-opacity-30 hover:shadow-lg hover:-translate-y-0.5 transition duration-150 md:w-1/2">
                 <img
-                  src="public/assets/images/facebook.png"
+                  src="/public/assets/images/facebook.png"
                   alt=""
                   className="w-9"
                 />

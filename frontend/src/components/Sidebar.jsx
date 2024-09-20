@@ -42,7 +42,10 @@ const Sidebar = () => {
 
   return (
     <div className="w-64 bg-white shadow-md">
-      <div className="p-6 text-2xl font-bold text-teal-500">MyWebApp</div>
+      <div className="p-6 text-2xl font-bold text-teal-500 flex flex-row items-center justify-center gap-2">
+        <img src="/src/assets/images/botIcon.jpg" width={50} />
+        <p>ChatMate</p>
+      </div>
       <nav className="mt-10">
         {navigation.map((item) => (
           <NavLink

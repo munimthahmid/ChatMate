@@ -14,11 +14,11 @@ function PageNav({ isHome = false }) {
     "font-bold py-2 px-2 rounded-md text-xl md:text-2xl lg:text-3xl xl:text-3xl font-lato";
 
   return (
-    <nav className="pt-4 mb-8 flex flex-row justify-between items-center relative">
+    <nav className="pt-4 mb-8 flex flex-row justify-around items-center relative">
       <NavLink to="/" className="flex items-center justify-start space-x-4">
         <img
-          src="/icon.jpg"
-          alt="CareerCompass logo"
+          src="/public/assets/images/botIcon.jpg"
+          alt="ChatMate logo"
           className="rounded-md"
           width={50}
           height={50}
@@ -28,7 +28,7 @@ function PageNav({ isHome = false }) {
             isHome ? "careercompass-text" : "text-sky-950"
           }`}
         >
-          Name
+          ChatMate
         </h1>
       </NavLink>
       <button
@@ -58,7 +58,7 @@ function PageNav({ isHome = false }) {
         <ul className="list-none flex flex-col md:flex-row">
           <li>
             <NavLink
-              to="/profile"
+              to="/dashboard/chat"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${hoverClass} ${
                   isActive ? activeLinkClasses : ""
@@ -70,7 +70,7 @@ function PageNav({ isHome = false }) {
           </li>
           <li>
             <NavLink
-              to="/jobs"
+              to="/dashboard/resources"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${hoverClass} ${
                   isActive ? activeLinkClasses : ""
@@ -78,6 +78,18 @@ function PageNav({ isHome = false }) {
               }
             >
               Resources
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/dashboard/train-chatbot"
+              className={({ isActive }) =>
+                `${baseLinkClasses} ${hoverClass} ${
+                  isActive ? activeLinkClasses : ""
+                }`
+              }
+            >
+              Train Chatbot
             </NavLink>
           </li>
         </ul>

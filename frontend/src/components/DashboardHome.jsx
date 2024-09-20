@@ -18,7 +18,12 @@ const DashboardHome = () => {
       onClick: () => navigate("/dashboard/train-chatbot"),
       icon: "📄",
     },
-    // Add more cards as needed
+    {
+      title: "Resources",
+      description: "Access all the documents across Teams",
+      onClick: () => navigate("/dashboard/resources"),
+      icon: "📚",
+    },
   ];
 
   return (

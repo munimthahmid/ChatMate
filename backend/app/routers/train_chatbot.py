@@ -9,7 +9,6 @@ from app.schemas.user import User
 from sentence_transformers import SentenceTransformer
 import faiss
 import os
-import uuid
 from pdfminer.high_level import extract_text
 from langchain.text_splitter import CharacterTextSplitter
 import pickle
@@ -61,19 +60,15 @@ async def train_chatbot(
     current_user: User = Depends(get_current_user),
 ):
 
-
-    # print("here!")
-    
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
-
 
     team_id = current_user.team_id  # Assuming 'team_id' is available in 'current_user'
     team_dir = os.path.join(TEAM_PDFS_DIR, f"team_{team_id}")
     os.makedirs(team_dir, exist_ok=True)
 
-    # # Save the uploaded PDF under the team's directory
-    pdf_filename = f"{uuid.uuid4()}_{file.filename}"
+    # Save the uploaded PDF under the team's directory without UUID
+    pdf_filename = file.filename
     pdf_path = os.path.join(team_dir, pdf_filename)
 
     try:
@@ -83,15 +78,9 @@ async def train_chatbot(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save PDF: {str(e)}")
 
-
-    # Read PDF content
+    # Read PDF content directly from the saved file
     try:
-        # Save the uploaded PDF temporarily
-        temp_pdf_path = f"temp_{uuid.uuid4()}.pdf"
-        with open(temp_pdf_path, 'wb') as temp_pdf:
-            temp_pdf.write(pdf_bytes)
-        text = extract_text(temp_pdf_path)
-        os.remove(temp_pdf_path)
+        text = extract_text(pdf_path)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to process PDF: {str(e)}")
 
